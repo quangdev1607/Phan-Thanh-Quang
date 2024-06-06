@@ -16,7 +16,7 @@ export function Navbar() {
                 <ToggleDarkMode />
                 <div>
                     <Button variant={"outline"} asChild>
-                        <Link className="flex gap-x-2 items-center" href={"/"}>
+                        <Link className="flex gap-x-2 items-center" href={"https://github.com/quangdev1607/Phan-Thanh-Quang"}>
                             <Star width={15} height={15} fill="yellow" />
                             <span>Github</span>
                         </Link>
