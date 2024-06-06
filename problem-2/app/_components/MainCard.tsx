@@ -1,4 +1,3 @@
-//@ts-nocheck
 "use client";
 import { Card, CardContent, CardFooter } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -24,7 +23,7 @@ import { currencyData } from "@/lib/currencyData";
 import { ArrowLeftRight } from "lucide-react";
 
 import toast from "react-hot-toast";
-import * as z from "zod";
+
 import { CurrencyData, processData, referenceAmount, swapPriceAmount } from "../_lib";
 
 export function MainCard() {
@@ -34,7 +33,7 @@ export function MainCard() {
     const [amountSent, setAmountSent] = useState(0);
     const [amountReceive, setAmountReceive] = useState<number>();
 
-    function swapConversion() {
+    function swapCurrency() {
         setCurrencyOne(currencyTwo);
         setCurrencyTwo(currencyOne);
         amountSent != 0
@@ -42,22 +41,21 @@ export function MainCard() {
             : setAmountReceive(0);
     }
 
-    async function mapCurrencyData() {
+    async function getInitialData() {
         const filteredCurrencyData = processData(currencyData);
 
-        // Set Default Value to the Selectors using first and second item
         setCurrencyOne(filteredCurrencyData[0]);
         setCurrencyTwo(filteredCurrencyData[1]);
         setCurrList(filteredCurrencyData);
     }
 
     useEffect(() => {
-        mapCurrencyData();
+        getInitialData();
     }, []);
 
-    const handleSubmit = async (e: Event) => {
+    const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
-        toast.success("🎉🎉🎉 You have converted successfully!!!");
+        toast.success("🎉 You have converted successfully!!!");
     };
 
     return (
@@ -73,7 +71,7 @@ export function MainCard() {
                             <Select
                                 required
                                 value={currencyOne}
-                                onValueChange={(value) => {
+                                onValueChange={(value: CurrencyData) => {
                                     setCurrencyOne(value);
                                     amountSent != 0
                                         ? setAmountReceive(swapPriceAmount(amountSent, value.price, currencyTwo?.price as number))
@@ -119,7 +117,7 @@ export function MainCard() {
                     {/* Reverse button */}
                     <div
                         className="border-4 p-4 cursor-pointer rounded-full bg-slate-200 dark:bg-slate-800  hover:bg-opacity-50"
-                        onClick={() => swapConversion()}
+                        onClick={() => swapCurrency()}
                     >
                         <ArrowLeftRight width={50} height={50} />
                     </div>
@@ -132,7 +130,7 @@ export function MainCard() {
                             <Select
                                 required
                                 value={currencyTwo}
-                                onValueChange={(value) => {
+                                onValueChange={(value: CurrencyData) => {
                                     setCurrencyTwo(value);
                                     amountSent != 0
                                         ? setAmountReceive(swapPriceAmount(amountSent, value.price, currencyOne?.price as number))
@@ -194,6 +192,7 @@ export function MainCard() {
                             )}
                         </span>
                     </div>
+
                     <AlertDialog>
                         <AlertDialogTrigger>
                             {amountSent !== 0 && (
